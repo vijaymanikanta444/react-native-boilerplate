@@ -20,6 +20,13 @@ const inPlaceMode = rawArgs.includes('--in-place');
 const argValues = rawArgs.filter(arg => !arg.startsWith('--'));
 const projectDirProvided = !inPlaceMode && argValues.length === 1;
 const interactiveMode = rawArgs.includes('--interactive') || argValues.length === 0 || projectDirProvided;
+const cliMode = inPlaceMode
+  ? 'in-place'
+  : projectDirProvided
+    ? 'one-arg'
+    : argValues.length === 0
+      ? 'no-arg'
+      : 'multi-arg';
 
 let appName = argValues[0] || '';
 let packageName = argValues[1] || '';
@@ -56,6 +63,8 @@ if (require.main === module) {
 // ============= Helper Functions =============
 
 async function run() {
+  console.log(`CLI Mode: ${cliMode}`);
+
   if (interactiveMode) {
     await collectInteractiveInput();
   } else if (!appName || !packageName) {
@@ -66,6 +75,10 @@ async function run() {
 
   displayName = displayName || appName;
   projectDirName = projectDirName || toKebabCase(appName);
+
+  if (!inPlaceMode) {
+    console.log(`Scaffold target: ${path.resolve(process.cwd(), projectDirName)}`);
+  }
 
   validateInputs();
 
@@ -134,9 +147,9 @@ async function collectInteractiveInput() {
     }
 
     displayName = await ask('Display Name (shown on device)', displayName || appName);
-
-    if (!inPlaceMode && !projectDirProvided) {
-      projectDirName = await ask('Project Folder Name', projectDirName || toKebabCase(appName));
+    if (!inPlaceMode) {
+      projectDirName = projectDirName || toKebabCase(appName);
+      console.log(`Using Project Folder: ${projectDirName}`);
     }
 
     const defaultPackage = packageName || `com.viet.${toKebabCase(appName).replace(/-/g, '')}`;

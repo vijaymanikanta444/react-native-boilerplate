@@ -15,8 +15,11 @@ const readline = require('node:readline/promises');
 const { stdin, stdout } = require('node:process');
 
 // Parse arguments
-const argValues = process.argv.slice(2).filter(arg => arg !== '--interactive');
-const interactiveMode = process.argv.includes('--interactive') || argValues.length === 0;
+const rawArgs = process.argv.slice(2);
+const inPlaceMode = rawArgs.includes('--in-place');
+const argValues = rawArgs.filter(arg => !arg.startsWith('--'));
+const projectDirProvided = !inPlaceMode && argValues.length === 1;
+const interactiveMode = rawArgs.includes('--interactive') || argValues.length === 0 || projectDirProvided;
 
 let appName = argValues[0] || '';
 let packageName = argValues[1] || '';
@@ -24,10 +27,16 @@ let organizationName = argValues[2] || 'VISAKHA INSTITUTE OF ENGINEERING & TECHN
 let displayName = argValues[3] || '';
 let supportEmail = argValues[4] || 'support@viet.edu.in';
 let ownerEmail = argValues[5] || 'owner@viet.edu.in';
+let projectDirName = projectDirProvided ? argValues[0] : '';
 
-const projectRoot = path.join(__dirname, '..');
-const iosPath = path.join(projectRoot, 'ios');
-const androidPath = path.join(projectRoot, 'android');
+if (projectDirProvided) {
+  appName = toPascalCase(projectDirName);
+}
+
+const templateRoot = path.join(__dirname, '..');
+let projectRoot = templateRoot;
+let iosPath = path.join(projectRoot, 'ios');
+let androidPath = path.join(projectRoot, 'android');
 
 // Constants
 const BOILERPLATE_NAME = 'NativeBoilerplate';
@@ -56,17 +65,23 @@ async function run() {
   }
 
   displayName = displayName || appName;
+  projectDirName = projectDirName || toKebabCase(appName);
 
   validateInputs();
 
   pascalCaseAppName = toPascalCase(appName);
   bundleId = packageName;
 
+  if (!inPlaceMode) {
+    scaffoldProject();
+  }
+
   console.log('🚀 Configuring React Native project...\n');
   console.log(`App Name: ${appName}`);
   console.log(`Display Name: ${displayName}`);
   console.log(`Pascal Case: ${pascalCaseAppName}`);
   console.log(`Package Name: ${packageName}`);
+  console.log(`Project Directory: ${inPlaceMode ? projectRoot : projectDirName}`);
   console.log(`Organization: ${organizationName}`);
   console.log(`Support Email: ${supportEmail}`);
   console.log(`Owner Email: ${ownerEmail}\n`);
@@ -87,10 +102,18 @@ async function run() {
   updateREADME();
 
   console.log('\n✅ Configuration complete!');
+  console.log(`\nProject ready at: ${projectRoot}`);
   console.log('\nNext steps:');
-  console.log('1. npm install');
-  console.log('2. npm run pods (for iOS)');
-  console.log('3. npm start');
+  if (!inPlaceMode) {
+    console.log(`1. cd ${projectDirName}`);
+    console.log('2. npm install');
+    console.log('3. npm run pods (for iOS)');
+    console.log('4. npm start');
+  } else {
+    console.log('1. npm install');
+    console.log('2. npm run pods (for iOS)');
+    console.log('3. npm start');
+  }
 }
 
 async function collectInteractiveInput() {
@@ -103,9 +126,19 @@ async function collectInteractiveInput() {
   };
 
   try {
-    const defaultAppName = appName || 'MyAwesomeApp';
-    appName = await ask('App Name (internal module/project name)', defaultAppName);
+    if (!projectDirProvided) {
+      const defaultAppName = appName || 'MyAwesomeApp';
+      appName = await ask('App Name (internal module/project name)', defaultAppName);
+    } else {
+      console.log(`Using App Name from folder: ${appName}`);
+    }
+
     displayName = await ask('Display Name (shown on device)', displayName || appName);
+
+    if (!inPlaceMode && !projectDirProvided) {
+      projectDirName = await ask('Project Folder Name', projectDirName || toKebabCase(appName));
+    }
+
     const defaultPackage = packageName || `com.viet.${toKebabCase(appName).replace(/-/g, '')}`;
     packageName = await ask('Package/Bundle ID', defaultPackage);
     organizationName = await ask('Organization Name', organizationName);
@@ -132,6 +165,72 @@ function validateInputs() {
   if (ownerEmail && !emailPattern.test(ownerEmail)) {
     throw new Error(`Invalid owner email: ${ownerEmail}`);
   }
+
+  if (!inPlaceMode) {
+    if (!projectDirName || /[\\/]/.test(projectDirName)) {
+      throw new Error('Project folder name must be a single folder name (no slashes).');
+    }
+  }
+}
+
+function setProjectPaths(rootPath) {
+  projectRoot = rootPath;
+  iosPath = path.join(projectRoot, 'ios');
+  androidPath = path.join(projectRoot, 'android');
+}
+
+function shouldSkipCopy(relativePath) {
+  const blocked = [
+    '.git',
+    'node_modules',
+    'vendor',
+    '.DS_Store',
+    'ios/Pods',
+    'ios/build',
+    'android/build',
+    'android/.gradle',
+    'android/.cxx',
+  ];
+
+  if (relativePath.endsWith('.tgz')) {
+    return true;
+  }
+
+  return blocked.some(entry => relativePath === entry || relativePath.startsWith(`${entry}/`));
+}
+
+function copyRecursive(sourceDir, targetDir, rootSource = sourceDir) {
+  const entries = fs.readdirSync(sourceDir, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const sourcePath = path.join(sourceDir, entry.name);
+    const relativePath = path.relative(rootSource, sourcePath);
+
+    if (shouldSkipCopy(relativePath)) {
+      continue;
+    }
+
+    const targetPath = path.join(targetDir, entry.name);
+    if (entry.isDirectory()) {
+      fs.mkdirSync(targetPath, { recursive: true });
+      copyRecursive(sourcePath, targetPath, rootSource);
+    } else {
+      fs.copyFileSync(sourcePath, targetPath);
+    }
+  }
+}
+
+function scaffoldProject() {
+  const destinationRoot = path.resolve(process.cwd(), projectDirName);
+  const destinationExists = fs.existsSync(destinationRoot);
+
+  if (destinationExists && fs.readdirSync(destinationRoot).length > 0) {
+    throw new Error(`Target folder already exists and is not empty: ${destinationRoot}`);
+  }
+
+  fs.mkdirSync(destinationRoot, { recursive: true });
+  copyRecursive(templateRoot, destinationRoot);
+  setProjectPaths(destinationRoot);
 }
 
 function toPascalCase(str) {

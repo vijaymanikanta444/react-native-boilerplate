@@ -4,9 +4,25 @@ vendor
 
 # Build output
 android/build
+android/build/**
+android/**/build
+android/**/build/**
 android/.gradle
+android/.gradle/**
+android/**/.gradle
+android/**/.gradle/**
+android/.cxx
+android/.cxx/**
+android/**/.cxx
+android/**/.cxx/**
 ios/build
+ios/build/**
+ios/**/build
+ios/**/build/**
 ios/Pods
+ios/Pods/**
+ios/**/Pods
+ios/**/Pods/**
 
 # VCS and editor files
 .git

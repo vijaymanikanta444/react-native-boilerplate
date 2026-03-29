@@ -16,21 +16,6 @@
     "template",
     "viet"
   ],
-  "files": [
-    "android",
-    "ios",
-    "scripts",
-    "src",
-    "App.tsx",
-    "app.json",
-    "babel.config.js",
-    "index.js",
-    "metro.config.js",
-    "tsconfig.json",
-    "react-native.config.js",
-    "Gemfile",
-    "README.md"
-  ],
   "bin": {
     "create-viet-native-app": "scripts/configure.js"
   },
@@ -47,8 +32,8 @@
     "typecheck": "tsc --noEmit",
     "release:bump": "node scripts/bump-version.js",
     "prepare": "husky install",
-    "configure": "node scripts/configure.js",
-    "configure:interactive": "node scripts/configure.js --interactive"
+    "configure": "node scripts/configure.js --in-place",
+    "configure:interactive": "node scripts/configure.js --interactive --in-place"
   },
   "dependencies": {
     "@react-native/new-app-screen": "^0.84.1",

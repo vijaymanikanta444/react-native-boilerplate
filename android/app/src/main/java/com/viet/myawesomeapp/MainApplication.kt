@@ -1,4 +1,4 @@
-package com.nativeboilerplate
+package com.viet.myawesomeapp
 
 import android.app.Application
 import com.facebook.react.PackageList

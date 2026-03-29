@@ -1,0 +1,27 @@
+# Dependency and cache folders
+node_modules
+vendor
+
+# Build output
+android/build
+android/.gradle
+ios/build
+ios/Pods
+
+# VCS and editor files
+.git
+.github
+.vscode
+
+# Local env files
+.env
+.env.*
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Tests and coverage
+__tests__
+coverage

@@ -1,4 +1,51 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# create-viet-native-app
+
+Interactive CLI for setting up this React Native template with your own app name, display name, package/bundle ID, and organization metadata.
+
+## Usage
+
+### Local (inside this repository)
+
+```sh
+npm run configure:interactive
+```
+
+### As published CLI (npx)
+
+```sh
+npx create-viet-native-app
+```
+
+The interactive wizard asks for:
+
+- App Name
+- Display Name
+- Package/Bundle ID
+- Organization Name
+- Support Email
+- Owner Email
+
+After setup, install dependencies and run:
+
+```sh
+npm install
+npm run pods
+npm run ios
+npm run android
+```
+
+## Publish to npm
+
+```sh
+npm login
+npm publish
+```
+
+Make sure the package name `create-viet-native-app` is available in npm before publishing.
+
+# React Native Template Notes
+
+This is a [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 # Getting Started
 

@@ -1,13 +1,36 @@
 {
-  "name": "my-awesome-app",
-  "version": "1.0.0",
+  "name": "create-viet-native-app",
+  "version": "0.0.1",
+  "description": "CLI to configure and bootstrap a React Native app template for VIET projects",
   "organization": {
     "name": "VISAKHA INSTITUTE OF ENGINEERING & TECHNOLOGY",
     "supportEmail": "support@viet.edu.in",
     "ownerEmail": "owner@viet.edu.in"
   },
   "releaseDate": null,
-  "private": true,
+  "private": false,
+  "keywords": [
+    "react-native",
+    "cli",
+    "scaffold",
+    "template",
+    "viet"
+  ],
+  "files": [
+    "android",
+    "ios",
+    "scripts",
+    "src",
+    "App.tsx",
+    "app.json",
+    "babel.config.js",
+    "index.js",
+    "metro.config.js",
+    "tsconfig.json",
+    "react-native.config.js",
+    "Gemfile",
+    "README.md"
+  ],
   "bin": {
     "create-viet-native-app": "scripts/configure.js"
   },

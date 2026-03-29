@@ -77,9 +77,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.viet.myawesomeapp"
+    namespace "com.viet.createvietnativeapp"
     defaultConfig {
-        applicationId "com.viet.myawesomeapp"
+        applicationId "com.viet.createvietnativeapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

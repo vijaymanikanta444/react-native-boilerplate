@@ -5,41 +5,50 @@
  * @format
  */
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import { useEffect, useState } from 'react';
+import { StatusBar } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { AppContent, SplashScreen } from './src/components/index';
+import { ThemeProvider, useTheme } from './src/theme/index';
+
+const appConfig = require('./app.json') as {
+  name?: string;
+  displayName?: string;
+};
+
+const APP_NAME = appConfig.displayName ?? appConfig.name ?? 'Application';
+const SPLASH_DURATION_MS = 2200;
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
+  const [showSplash, setShowSplash] = useState(true);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setShowSplash(false);
+    }, SPLASH_DURATION_MS);
+
+    return () => clearTimeout(timeoutId);
+  }, []);
 
   return (
-    <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
-    </SafeAreaProvider>
+    <ThemeProvider>
+      <SafeAreaProvider>
+        <ThemedStatusBar />
+        {showSplash ? <SplashScreen appName={APP_NAME} /> : <AppContent />}
+      </SafeAreaProvider>
+    </ThemeProvider>
   );
 }
 
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
+function ThemedStatusBar() {
+  const { theme } = useTheme();
 
   return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
+    <StatusBar
+      barStyle={theme.mode === 'dark' ? 'light-content' : 'dark-content'}
+      backgroundColor={theme.colors.background}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 export default App;

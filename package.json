@@ -31,6 +31,7 @@
     "test": "jest",
     "typecheck": "tsc --noEmit",
     "release:bump": "node scripts/bump-version.js",
+    "icons:generate": "rn-app-icons src/assets/icon.png",
     "prepare": "husky install",
     "configure": "node scripts/configure.js --in-place",
     "configure:interactive": "node scripts/configure.js --interactive --in-place"

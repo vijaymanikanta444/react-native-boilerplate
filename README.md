@@ -152,12 +152,12 @@ This project uses [`rn-app-icons`](https://www.npmjs.com/package/rn-app-icons) (
 1. **Place your base icon image:**
 
    - Prepare a 1024x1024 PNG image (no transparency, square) as your app icon.
-   - Place it in the `assets` folder (e.g., `assets/icon.png`).
+   - Place it in the `src/assets` folder (e.g., `src/assets/icon.png`).
 
 2. **Run rn-app-icons using npx:**
 
    ```sh
-   npx rn-app-icons assets/icon.png
+   npx rn-app-icons src/assets/icon.png
    ```
 
    This will automatically generate and overwrite all required icon files for both Android and iOS platforms in the correct locations.

@@ -142,3 +142,31 @@ To learn more about React Native, take a look at the following resources:
 - [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
 - [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+
+# App Icon Generation (Android & iOS)
+
+This project uses [`rn-app-icons`](https://www.npmjs.com/package/rn-app-icons) (already included in package.json) to generate all required app icon sizes for both Android and iOS from a single source image.
+
+## Steps to Generate App Icons
+
+1. **Place your base icon image:**
+
+   - Prepare a 1024x1024 PNG image (no transparency, square) as your app icon.
+   - Place it in the `assets` folder (e.g., `assets/icon.png`).
+
+2. **Run rn-app-icons using npx:**
+
+   ```sh
+   npx rn-app-icons assets/icon.png
+   ```
+
+   This will automatically generate and overwrite all required icon files for both Android and iOS platforms in the correct locations.
+
+3. **Rebuild your app:**
+   - For changes to take effect, rebuild your app:
+     ```sh
+     npm run android
+     npm run ios
+     ```
+
+> For more details and advanced options, see the [rn-app-icons documentation](https://www.npmjs.com/package/rn-app-icons).

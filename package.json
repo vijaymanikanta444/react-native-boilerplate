@@ -63,6 +63,7 @@
     "lint-staged": "^15.2.11",
     "prettier": "2.8.8",
     "react-test-renderer": "19.2.3",
+    "rn-app-icons": "^1.0.7",
     "typescript": "^5.8.3"
   },
   "engines": {

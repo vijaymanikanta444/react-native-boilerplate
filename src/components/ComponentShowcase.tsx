@@ -22,10 +22,12 @@ export function ComponentShowcase() {
   return (
     <ScrollView
       style={styles.container}
+      contentInsetAdjustmentBehavior="never"
+      automaticallyAdjustContentInsets={false}
       contentContainerStyle={[
         styles.content,
         {
-          paddingTop: insets.top + theme.spacing.lg,
+          paddingTop: 0,
           paddingBottom: insets.bottom + theme.spacing.lg,
         },
       ]}
